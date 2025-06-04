@@ -5,18 +5,37 @@
 
 package de.codecrafter.smartAfk;
 
+import de.codecrafter.smartAfk.listeners.PlayerJoinListener;
+import de.codecrafter.smartAfk.utils.UpdateChecker;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
 public final class SmartAfk extends JavaPlugin {
+    private static SmartAfk plugin;
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
+        plugin = this;
 
+        // config
+
+        // update checker
+        BukkitScheduler scheduler = getServer().getScheduler();
+        UpdateChecker updateChecker = new UpdateChecker(this);
+        scheduler.runTaskTimerAsynchronously(this, updateChecker::check, 0, 72000);
+
+        // commands
+
+        // listeners
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(updateChecker), this);
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+    }
+
+    public static SmartAfk getPlugin() {
+        return plugin;
     }
 }
