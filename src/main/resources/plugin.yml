@@ -1,6 +1,10 @@
 name: SmartAfk
-version: '1.0.0-beta'
+version: ${version}
 main: de.codecrafter.smartAfk.SmartAfk
 api-version: '1.21'
 authors: [ Felix Heidisch ]
 website: https://github.com/IschdeFelin
+commands:
+  afk:
+    description: Toggles the afk state.
+    usage: /afk
