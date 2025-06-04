@@ -2,9 +2,13 @@
 freeze-afk-players: true
 
 # cancel afk status if the player jumps
-# only active if 'freeze-afk-players' is true
+# ONLY WORKS IF 'freeze-afk-players' IS TRUE
 cancel-afk-on-jump: true
 
 # cancel afk status if player moves more than 3 blocks
-# only active if 'freeze-afk-players' is false
+# else use the '/afk' command
+# ONLY WORKS IF 'freeze-afk-players' IS FALSE
 cancel-afk-on-move: true
+
+# the player cannot take damage when he is afk
+invulnerable-during-afk: true

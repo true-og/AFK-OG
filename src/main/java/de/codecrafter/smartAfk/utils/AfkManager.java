@@ -5,6 +5,7 @@
 
 package de.codecrafter.smartAfk.utils;
 
+import de.codecrafter.smartAfk.SmartAfk;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
@@ -20,7 +21,7 @@ public class AfkManager {
     public void setAfk(Player player) {
         afkPlayers.add(player.getUniqueId());
         afkPositions.put(player.getUniqueId(), player.getLocation());
-        player.setInvulnerable(true);
+        if (SmartAfk.getPlugin().getAfkConfig().isInvulnerableDuringAfk()) player.setInvulnerable(true);
 
         Component name = player.name();
         player.displayName(AFK_PREFIX.append(name.color(NamedTextColor.WHITE)));
@@ -32,7 +33,7 @@ public class AfkManager {
     public void unsetAfk(Player player) {
         afkPlayers.remove(player.getUniqueId());
         afkPositions.remove(player.getUniqueId());
-        player.setInvulnerable(false);
+        if (SmartAfk.getPlugin().getAfkConfig().isInvulnerableDuringAfk()) player.setInvulnerable(false);
 
         Component name = player.name();
         player.displayName(name);
