@@ -1,0 +1,10 @@
+# prevent afk players from moving
+freeze-afk-players: true
+
+# cancel afk status if the player jumps
+# only active if 'freeze-afk-players' is true
+cancel-afk-on-jump: true
+
+# cancel afk status if player moves more than 3 blocks
+# only active if 'freeze-afk-players' is false
+cancel-afk-on-move: true
