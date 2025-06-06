@@ -6,8 +6,7 @@
 package de.codecrafter.smartAfk.utils;
 
 import de.codecrafter.smartAfk.SmartAfk;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class AfkConfig {
@@ -36,7 +35,7 @@ public class AfkConfig {
     public void reload() {
         plugin.reloadConfig();
         load(plugin.getConfig());
-        plugin.getComponentLogger().info(Component.text("Timer config reloaded.", NamedTextColor.GREEN));
+        plugin.getLogger().info(ChatColor.GREEN + "Timer config reloaded.");
     }
 
     /**

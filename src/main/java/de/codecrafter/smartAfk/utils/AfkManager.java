@@ -6,8 +6,7 @@
 package de.codecrafter.smartAfk.utils;
 
 import de.codecrafter.smartAfk.SmartAfk;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -18,18 +17,18 @@ public class AfkManager {
     private final Set<UUID> afkPlayers = new HashSet<>();
     private final Map<UUID, Location> afkPositions = new HashMap<>();
     private final Map<UUID, Long> lastActivities = new HashMap<>();
-    private static final Component AFK_PREFIX = Component.text("[AFK] ", NamedTextColor.RED);
+    private static final String AFK_PREFIX = ChatColor.RED + "[AFK] ";
 
     public void setAfk(Player player) {
         afkPlayers.add(player.getUniqueId());
         afkPositions.put(player.getUniqueId(), player.getLocation());
         if (SmartAfk.getPlugin().getAfkConfig().isInvulnerableDuringAfk()) player.setInvulnerable(true);
 
-        Component name = player.name();
-        player.displayName(AFK_PREFIX.append(name.color(NamedTextColor.WHITE)));
-        player.playerListName(AFK_PREFIX.append(name.color(NamedTextColor.WHITE)));
+        String name = player.getName();
+        player.setDisplayName(AFK_PREFIX + ChatColor.RESET + name);
+        player.setPlayerListName(AFK_PREFIX + ChatColor.RESET + name);
 
-        player.sendMessage(Component.text("Du bist jetzt Afk.", NamedTextColor.GREEN));
+        player.sendMessage(ChatColor.GREEN + "Du bist jetzt Afk.");
     }
 
     public void unsetAfk(Player player) {
@@ -37,11 +36,11 @@ public class AfkManager {
         afkPositions.remove(player.getUniqueId());
         if (SmartAfk.getPlugin().getAfkConfig().isInvulnerableDuringAfk()) player.setInvulnerable(false);
 
-        Component name = player.name();
-        player.displayName(name);
-        player.playerListName(name);
+        String name = player.getName();
+        player.setDisplayName(name);
+        player.setPlayerListName(name);
 
-        player.sendMessage(Component.text("Du bist jetzt nicht mehr Afk.", NamedTextColor.YELLOW));
+        player.sendMessage(ChatColor.YELLOW + "Du bist jetzt nicht mehr Afk.");
     }
 
     public boolean isAfk(Player player) {

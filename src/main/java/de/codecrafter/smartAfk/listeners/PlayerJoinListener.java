@@ -6,8 +6,7 @@
 package de.codecrafter.smartAfk.listeners;
 
 import de.codecrafter.smartAfk.utils.UpdateChecker;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,14 +23,13 @@ public class PlayerJoinListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         if (updateChecker.isUpdateAvailable()) {
-            player.sendMessage(
-                    Component.text("A new version of ", NamedTextColor.YELLOW)
-                            .append(Component.text("SmartAfk", NamedTextColor.GOLD))
-                            .append(Component.text(" is available: ", NamedTextColor.YELLOW))
-                            .append(Component.text("v" + updateChecker.getLatestVersion(), NamedTextColor.GREEN))
-                            .append(Component.text(" (you have ", NamedTextColor.YELLOW))
-                            .append(Component.text("v" + updateChecker.getCurrentVersion(), NamedTextColor.RED))
-                            .append(Component.text(")", NamedTextColor.YELLOW)));
+            player.sendMessage(ChatColor.YELLOW + "A new version of " +
+                    ChatColor.GOLD + "SmartAfk" +
+                    ChatColor.YELLOW + " is available: " +
+                    ChatColor.GREEN + "v" + updateChecker.getLatestVersion() +
+                    ChatColor.YELLOW + " (you have " +
+                    ChatColor.RED + "v" + updateChecker.getCurrentVersion() +
+                    ChatColor.YELLOW + ")");
         }
     }
 }

@@ -35,7 +35,7 @@ public class UpdateChecker {
                 try (InputStreamReader reader = new InputStreamReader(conn.getInputStream())) {
                     JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
                     String latestVersion = normalizeVersion(json.get("tag_name").getAsString());
-                    String currentVersion = normalizeVersion(plugin.getPluginMeta().getVersion());
+                    String currentVersion = normalizeVersion(plugin.getDescription().getVersion());
 
                     if (isNewerVersion(currentVersion, latestVersion)) {
                         this.updateAvailable = true;
