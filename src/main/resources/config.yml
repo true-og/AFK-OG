@@ -1,3 +1,7 @@
+# the time in seconds of inactivity before the player is marked as afk
+# use '-1' to disable this feature
+afk-timeout-seconds: 120
+
 # prevent afk players from moving
 freeze-afk-players: true
 

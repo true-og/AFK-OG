@@ -18,6 +18,7 @@ public class AfkConfig {
     private boolean cancelAfkOnMove;
     private boolean cancelAfkOnJump;
     private boolean invulnerableDuringAfk;
+    private int afkTimeoutSeconds;
 
     /**
      * Creates an instance of {@code TimerConfig} class.
@@ -48,6 +49,7 @@ public class AfkConfig {
         this.cancelAfkOnJump = config.getBoolean("cancel-afk-on-jump", true);
         this.cancelAfkOnMove = config.getBoolean("cancel-afk-on-move", true);
         this.invulnerableDuringAfk = config.getBoolean("invulnerable-during-afk", true);
+        this.afkTimeoutSeconds = config.getInt("afk-timeout-seconds", 120);
     }
 
     public boolean isFreezeAfkPlayers() {
@@ -64,5 +66,9 @@ public class AfkConfig {
 
     public boolean isInvulnerableDuringAfk() {
         return invulnerableDuringAfk;
+    }
+
+    public int getAfkTimeoutSeconds() {
+        return afkTimeoutSeconds;
     }
 }

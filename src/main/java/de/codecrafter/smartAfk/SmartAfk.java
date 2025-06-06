@@ -37,6 +37,9 @@ public final class SmartAfk extends JavaPlugin {
 
         // listeners
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(updateChecker), this);
+
+        // start the afk check task if in config enabled
+        if (afkConfig.getAfkTimeoutSeconds() > 0) afkManager.startAfkCheckTask(this);
     }
 
     @Override
