@@ -46,7 +46,9 @@ public final class SmartAfk extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        getServer().getOnlinePlayers().forEach(player -> {
+            if (afkManager.isAfk(player)) afkManager.unsetAfk(player);
+        });
     }
 
     public static SmartAfk getPlugin() {
