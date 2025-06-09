@@ -44,11 +44,14 @@ public class AfkConfig {
      * @param config The config object.
      */
     private void load(FileConfiguration config) {
+        this.afkTimeoutSeconds = config.getInt("afk-timeout-seconds", 120);
         this.freezeAfkPlayers = config.getBoolean("freeze-afk-players", true);
         this.cancelAfkOnJump = config.getBoolean("cancel-afk-on-jump", true);
-        this.cancelAfkOnMove = config.getBoolean("cancel-afk-on-move", true);
         this.invulnerableDuringAfk = config.getBoolean("invulnerable-during-afk", true);
-        this.afkTimeoutSeconds = config.getInt("afk-timeout-seconds", 120);
+    }
+
+    public int getAfkTimeoutSeconds() {
+        return afkTimeoutSeconds;
     }
 
     public boolean isFreezeAfkPlayers() {
@@ -59,15 +62,7 @@ public class AfkConfig {
         return cancelAfkOnJump;
     }
 
-    public boolean isCancelAfkOnMove() {
-        return cancelAfkOnMove;
-    }
-
     public boolean isInvulnerableDuringAfk() {
         return invulnerableDuringAfk;
-    }
-
-    public int getAfkTimeoutSeconds() {
-        return afkTimeoutSeconds;
     }
 }
