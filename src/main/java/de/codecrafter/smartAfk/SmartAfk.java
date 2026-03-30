@@ -8,6 +8,7 @@ package de.codecrafter.smartAfk;
 import de.codecrafter.smartAfk.commands.AfkCommand;
 import de.codecrafter.smartAfk.listeners.AfkListener;
 import de.codecrafter.smartAfk.listeners.PlayerJoinListener;
+import de.codecrafter.smartAfk.placeholders.AfkPlaceholderExpansion;
 import de.codecrafter.smartAfk.utils.AfkConfig;
 import de.codecrafter.smartAfk.utils.AfkManager;
 import de.codecrafter.smartAfk.utils.UpdateChecker;
@@ -39,6 +40,10 @@ public final class SmartAfk extends JavaPlugin {
         // listeners
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(updateChecker), this);
         getServer().getPluginManager().registerEvents(new AfkListener(), this);
+
+        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new AfkPlaceholderExpansion(this).register();
+        }
 
         // start the afk check task if in config enabled
         if (afkConfig.getAfkTimeoutSeconds() > 0) afkManager.startAfkCheckTask(this);

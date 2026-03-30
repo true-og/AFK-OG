@@ -1,9 +1,10 @@
-name: SmartAfk
+name: ${pluginName}
 version: ${version}
 main: de.codecrafter.smartAfk.SmartAfk
-api-version: '1.21'
+api-version: ${apiVersion}
 authors: [ Felix Heidisch ]
 website: https://github.com/IschdeFelin
+softdepend: [PlaceholderAPI]
 commands:
   afk:
     description: Toggles the afk state.

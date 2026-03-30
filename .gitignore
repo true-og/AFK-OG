@@ -19,6 +19,11 @@ atlassian-ide-plugin.xml
 # Log file
 *.log
 
+# Eclipse files
+.classpath
+.project
+.settings/
+
 # BlueJ files
 *.ctxt
 
