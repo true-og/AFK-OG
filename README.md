@@ -1,9 +1,13 @@
-# Smart Afk
+# AFK-OG
 
-**SmartAfk** is a lightweight and configurable Minecraft plugin that detects player inactivity.
-Players can manually toggle their AFK status, and server admins can configure behaviors like freezing movement or granting invulnerability.
+**AFK-OG** is a lightweight and configurable Minecraft plugin for Purpur-compatible 1.19.4 servers that detects player inactivity.
+Players can manually toggle their AFK status, and server admins can configure behaviors like freezing movement, cancelling AFK on jump, or granting invulnerability while a player is AFK.
 
-**Download:** [https://modrinth.com/project/smart-afk](https://modrinth.com/project/smart-afk)
+**Requirements:** Java 17, Purpur/Paper-compatible 1.19.4 server
+
+**Optional dependency:** [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
+
+**Source:** [https://github.com/IschdeFelin/mc-smart-afk](https://github.com/IschdeFelin/mc-smart-afk)
 
 ---
 
@@ -14,8 +18,9 @@ Players can manually toggle their AFK status, and server admins can configure be
 - Optionally make AFK players invulnerable
 - Optionally cancel AFK mode when jumping
 - Prevents AFK players from interacting with the world
-- Notifies players when they go AFK or return
+- Adds an `[AFK]` prefix to the player's display name and player list name
 - Update checker to inform admins about new releases
+- PlaceholderAPI expansion for AFK status output
 
 ---
 
@@ -25,22 +30,25 @@ Toggle your AFK status manually.
 
 Useful if you want to go AFK immediately without waiting for the timeout.
 
+This command is player-only.
+
 ---
 
 ## Installation
 
-1) Download the `.jar` file from Modrinth.
-2) Place it in your server's `/plugins` folder.
-3) Restart the server.
+1. Build or download the plugin `.jar`.
+2. Place it in your server's `/plugins` folder.
+3. Install PlaceholderAPI as well if you want placeholder support.
+4. Start or restart the server.
 
 ---
 
 ## Configuration
 
-Edit the config.yml to adjust AFK behavior to your server’s needs.
+Edit `config.yml` to adjust AFK behavior to your server’s needs.
 Changes require a reload or restart.
 
-Located at: `/plugins/SmartAfk/config.yml`
+Located at: `/plugins/AFK-OG/config.yml`
 
 ### Options
 
@@ -53,5 +61,24 @@ Located at: `/plugins/SmartAfk/config.yml`
 
 ---
 
-Have suggestions or found a bug?
-Visit my [GitHub repository](https://github.com/IschdeFelin/mc-smart-afk) to open an issue or contribute via pull request!
+## PlaceholderAPI
+
+If PlaceholderAPI is installed, AFK-OG registers the following placeholder:
+
+| Placeholder     | Description                                   |
+|----------------|-----------------------------------------------|
+| `%afkog_status%` | Returns `AFK` while the player is AFK, otherwise an empty string |
+
+---
+
+## Building
+
+Build the plugin locally with:
+
+```bash
+./gradlew build
+```
+
+The shaded plugin jar is produced in `build/libs/`.
+
+---
