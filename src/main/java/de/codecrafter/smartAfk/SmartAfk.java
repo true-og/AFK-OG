@@ -11,9 +11,7 @@ import de.codecrafter.smartAfk.listeners.PlayerJoinListener;
 import de.codecrafter.smartAfk.placeholders.AfkPlaceholderExpansion;
 import de.codecrafter.smartAfk.utils.AfkConfig;
 import de.codecrafter.smartAfk.utils.AfkManager;
-import de.codecrafter.smartAfk.utils.UpdateChecker;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitScheduler;
 
 public final class SmartAfk extends JavaPlugin {
     private static SmartAfk plugin;
@@ -27,18 +25,11 @@ public final class SmartAfk extends JavaPlugin {
         afkConfig = new AfkConfig(this);
         afkManager = new AfkManager();
 
-        // config
-
-        // update checker
-        BukkitScheduler scheduler = getServer().getScheduler();
-        UpdateChecker updateChecker = new UpdateChecker(this);
-        scheduler.runTaskTimerAsynchronously(this, updateChecker::check, 0, 72000);
-
         // commands
         getCommand("afk").setExecutor(new AfkCommand());
 
         // listeners
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(updateChecker), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         getServer().getPluginManager().registerEvents(new AfkListener(), this);
 
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
