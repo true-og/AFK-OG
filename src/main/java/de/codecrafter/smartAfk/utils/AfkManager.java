@@ -53,6 +53,12 @@ public class AfkManager {
         lastActivities.put(player.getUniqueId(), System.currentTimeMillis());
     }
 
+    public void clearLegacyInvulnerability(Player player) {
+        if (!isAfk(player) && player.isInvulnerable()) {
+            player.setInvulnerable(false);
+        }
+    }
+
     public long getLastActivity(Player player) {
         return lastActivities.getOrDefault(player.getUniqueId(), System.currentTimeMillis());
     }

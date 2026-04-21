@@ -36,6 +36,8 @@ public final class SmartAfk extends JavaPlugin {
             new AfkPlaceholderExpansion(this).register();
         }
 
+        getServer().getOnlinePlayers().forEach(afkManager::clearLegacyInvulnerability);
+
         // start the afk check task if in config enabled
         if (afkConfig.getAfkTimeoutSeconds() > 0) afkManager.startAfkCheckTask(this);
     }
