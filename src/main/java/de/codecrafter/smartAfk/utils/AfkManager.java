@@ -22,7 +22,6 @@ public class AfkManager {
     public void setAfk(Player player) {
         afkPlayers.add(player.getUniqueId());
         afkPositions.put(player.getUniqueId(), player.getLocation());
-        if (SmartAfk.getPlugin().getAfkConfig().isInvulnerableDuringAfk()) player.setInvulnerable(true);
 
         String name = player.getName();
         player.setDisplayName(AFK_PREFIX + ChatColor.RESET + name);
@@ -34,7 +33,6 @@ public class AfkManager {
     public void unsetAfk(Player player) {
         afkPlayers.remove(player.getUniqueId());
         afkPositions.remove(player.getUniqueId());
-        if (SmartAfk.getPlugin().getAfkConfig().isInvulnerableDuringAfk()) player.setInvulnerable(false);
 
         String name = player.getName();
         player.setDisplayName(name);

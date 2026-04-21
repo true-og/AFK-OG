@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -90,6 +91,27 @@ public class AfkListener implements Listener {
         if (afkManager.isAfk(player)) {
             afkManager.unsetAfk(player);
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onEntityDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+
+        SmartAfk plugin = SmartAfk.getPlugin();
+        AfkManager afkManager = plugin.getAfkManager();
+        if (!plugin.getAfkConfig().isInvulnerableDuringAfk() || !afkManager.isAfk(player)) {
+            return;
+        }
+
+        if (event instanceof EntityDamageByEntityEvent damageByEntityEvent && getAttacker(damageByEntityEvent) != null) {
+            afkManager.updateActivity(player);
+            afkManager.unsetAfk(player);
+            return;
+        }
+
+        event.setCancelled(true);
     }
 
     private Player getAttacker(EntityDamageByEntityEvent event) {
