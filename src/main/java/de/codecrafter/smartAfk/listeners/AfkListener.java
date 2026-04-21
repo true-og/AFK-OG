@@ -10,6 +10,7 @@ import de.codecrafter.smartAfk.utils.AfkConfig;
 import de.codecrafter.smartAfk.utils.AfkManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -31,18 +32,20 @@ public class AfkListener implements Listener {
             return;
         }
 
-
         if (afkManager.isAfk(player)) {
-            if (afkConfig.isFreezeAfkPlayers()) {
-                Location from = event.getFrom();
-                Location origTo = event.getTo();
-                if (afkConfig.isCancelAfkOnJump() && origTo.getY() >= from.getBlockY() + 1) {
-                    afkManager.unsetAfk(player);
-                    return;
-                }
-
-                event.setTo(from);
+            if (!afkConfig.isFreezeAfkPlayers()) {
+                afkManager.unsetAfk(player);
+                return;
             }
+
+            Location from = event.getFrom();
+            Location origTo = event.getTo();
+            if (afkConfig.isCancelAfkOnJump() && origTo.getY() >= from.getBlockY() + 1) {
+                afkManager.unsetAfk(player);
+                return;
+            }
+
+            event.setTo(from);
         }
     }
 
@@ -52,7 +55,7 @@ public class AfkListener implements Listener {
         AfkManager afkManager = SmartAfk.getPlugin().getAfkManager();
         afkManager.updateActivity(player);
         if (afkManager.isAfk(player)) {
-            event.setCancelled(true);
+            afkManager.unsetAfk(player);
         }
     }
 
@@ -62,21 +65,42 @@ public class AfkListener implements Listener {
         AfkManager afkManager = SmartAfk.getPlugin().getAfkManager();
         afkManager.updateActivity(player);
         if (afkManager.isAfk(player)) {
-            event.setCancelled(true);
+            afkManager.unsetAfk(player);
         }
     }
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (!(event.getDamager() instanceof Player player)) {
+        AfkManager afkManager = SmartAfk.getPlugin().getAfkManager();
+
+        if (event.getEntity() instanceof Player attackedPlayer) {
+            afkManager.updateActivity(attackedPlayer);
+            if (afkManager.isAfk(attackedPlayer)) {
+                afkManager.unsetAfk(attackedPlayer);
+            }
+        }
+
+        Player player = getAttacker(event);
+        if (player == null) {
             return;
         }
 
-        AfkManager afkManager = SmartAfk.getPlugin().getAfkManager();
         afkManager.updateActivity(player);
 
         if (afkManager.isAfk(player)) {
-            event.setCancelled(true);
+            afkManager.unsetAfk(player);
         }
+    }
+
+    private Player getAttacker(EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Player player) {
+            return player;
+        }
+
+        if (event.getDamager() instanceof Projectile projectile && projectile.getShooter() instanceof Player player) {
+            return player;
+        }
+
+        return null;
     }
 }
