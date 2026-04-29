@@ -1,13 +1,13 @@
 # the time in seconds of inactivity before the player is marked as afk
 # use '-1' to disable this feature
-afk-timeout-seconds: 120
+afk-timeout-seconds: 300
 
 # prevent afk players from moving
-freeze-afk-players: true
+freeze-afk-players: false
 
 # cancel afk status if the player jumps
 # ONLY WORKS IF 'freeze-afk-players' IS TRUE
 cancel-afk-on-jump: true
 
-# the player cannot take damage when he is afk
+# the player cannot take damage when they are afk
 invulnerable-during-afk: true
