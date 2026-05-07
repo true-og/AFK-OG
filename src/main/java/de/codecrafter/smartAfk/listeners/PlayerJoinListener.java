@@ -5,15 +5,19 @@
 
 package de.codecrafter.smartAfk.listeners;
 
-import de.codecrafter.smartAfk.SmartAfk;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import de.codecrafter.smartAfk.AFKOG;
+
 public class PlayerJoinListener implements Listener {
 
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        SmartAfk.getPlugin().getAfkManager().clearLegacyInvulnerability(event.getPlayer());
-    }
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent event) {
+
+		AFKOG.getPlugin().getAfkManager().clearLegacyInvulnerability(event.getPlayer());
+
+	}
+
 }

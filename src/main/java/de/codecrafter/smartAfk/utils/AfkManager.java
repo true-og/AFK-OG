@@ -5,78 +5,118 @@
 
 package de.codecrafter.smartAfk.utils;
 
-import de.codecrafter.smartAfk.SmartAfk;
-import org.bukkit.ChatColor;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
+import de.codecrafter.smartAfk.AFKOG;
+import net.kyori.adventure.text.Component;
 
 public class AfkManager {
-    private final Set<UUID> afkPlayers = new HashSet<>();
-    private final Map<UUID, Location> afkPositions = new HashMap<>();
-    private final Map<UUID, Long> lastActivities = new HashMap<>();
-    private static final String AFK_PREFIX = ChatColor.RED + "[AFK] ";
 
-    public void setAfk(Player player) {
-        afkPlayers.add(player.getUniqueId());
-        afkPositions.put(player.getUniqueId(), player.getLocation());
+	private final Set<UUID> afkPlayers = new HashSet<>();
+	private final Map<UUID, Location> afkPositions = new HashMap<>();
+	private final Map<UUID, Long> lastActivities = new HashMap<>();
+	private static final String AFK_PREFIX = "&c[AFK] ";
 
-        String name = player.getName();
-        player.setDisplayName(AFK_PREFIX + ChatColor.RESET + name);
-        player.setPlayerListName(AFK_PREFIX + ChatColor.RESET + name);
+	public void setAfk(Player player) {
 
-        player.sendMessage(ChatColor.GREEN + "Du bist jetzt Afk.");
-    }
+		afkPlayers.add(player.getUniqueId());
+		afkPositions.put(player.getUniqueId(), player.getLocation());
 
-    public void unsetAfk(Player player) {
-        afkPlayers.remove(player.getUniqueId());
-        afkPositions.remove(player.getUniqueId());
+		final String name = player.getName();
 
-        String name = player.getName();
-        player.setDisplayName(name);
-        player.setPlayerListName(name);
+		player.displayName(Component.text(AFK_PREFIX + "&r" + name));
+		player.playerListName(Component.text(AFK_PREFIX + "&r" + name));
 
-        player.sendMessage(ChatColor.YELLOW + "Du bist jetzt nicht mehr Afk.");
-    }
+		player.sendMessage(AFK_PREFIX + "&c You are now AFK.");
 
-    public boolean isAfk(Player player) {
-        return afkPlayers.contains(player.getUniqueId());
-    }
+	}
 
-    public Location getAfkPosition(Player player) {
-        return afkPositions.get(player.getUniqueId());
-    }
+	public void unsetAfk(Player player) {
 
-    public void updateActivity(Player player) {
-        lastActivities.put(player.getUniqueId(), System.currentTimeMillis());
-    }
+		afkPlayers.remove(player.getUniqueId());
+		afkPositions.remove(player.getUniqueId());
 
-    public void clearLegacyInvulnerability(Player player) {
-        if (!isAfk(player) && player.isInvulnerable()) {
-            player.setInvulnerable(false);
-        }
-    }
+		final Component name = Component.text(player.getName());
 
-    public long getLastActivity(Player player) {
-        return lastActivities.getOrDefault(player.getUniqueId(), System.currentTimeMillis());
-    }
+		player.displayName(name);
+		player.playerListName(name);
 
-    public void startAfkCheckTask(SmartAfk plugin) {
-        new BukkitRunnable() {
-            final int timeoutSeconds = plugin.getAfkConfig().getAfkTimeoutSeconds();
+		player.sendMessage(AFK_PREFIX + "&a You are no longer AFK.");
 
-            @Override
-            public void run() {
-                plugin.getServer().getOnlinePlayers().forEach(player -> {
-                    if (isAfk(player)) return;
+	}
 
-                    if (System.currentTimeMillis() - getLastActivity(player) > timeoutSeconds * 1000L) {
-                        setAfk(player);
-                    }
-                });
-            }
-        }.runTaskTimer(plugin, 20L, 100L); // every 5 seconds
-    }
+	public boolean isAfk(Player player) {
+
+		return afkPlayers.contains(player.getUniqueId());
+
+	}
+
+	public Location getAfkPosition(Player player) {
+
+		return afkPositions.get(player.getUniqueId());
+
+	}
+
+	public void updateActivity(Player player) {
+
+		lastActivities.put(player.getUniqueId(), System.currentTimeMillis());
+
+	}
+
+	public void clearLegacyInvulnerability(Player player) {
+
+		if (!isAfk(player) && player.isInvulnerable()) {
+
+			player.setInvulnerable(false);
+
+		}
+
+	}
+
+	public long getLastActivity(Player player) {
+
+		return lastActivities.getOrDefault(player.getUniqueId(), System.currentTimeMillis());
+
+	}
+
+	public void startAfkCheckTask(AFKOG plugin) {
+
+		new BukkitRunnable() {
+
+			final int timeoutSeconds = plugin.getAfkConfig().getAfkTimeoutSeconds();
+
+			@Override
+			public void run() {
+
+				plugin.getServer().getOnlinePlayers().forEach(player -> {
+
+					if (isAfk(player)) {
+
+						return;
+
+					}
+
+					if (System.currentTimeMillis() - getLastActivity(player) > timeoutSeconds * 1000L) {
+
+						setAfk(player);
+
+					}
+
+				});
+
+			}
+
+			// Every 5 seconds.   
+		}.runTaskTimer(plugin, 20L, 100L);
+
+	}
+
 }

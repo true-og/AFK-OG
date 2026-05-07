@@ -1,9 +1,9 @@
 name: ${pluginName}
 version: ${version}
-main: de.codecrafter.smartAfk.SmartAfk
+main: de.codecrafter.smartAfk.AFKOG
 api-version: ${apiVersion}
-authors: [ Felix Heidisch ]
-website: https://github.com/IschdeFelin
+authors: [ Felix_Heidisch, NotAlexNoyle ]
+website: https://github.com/true-og/AFK-OG
 softdepend: [PlaceholderAPI]
 commands:
   afk:
