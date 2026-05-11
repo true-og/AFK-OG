@@ -11,3 +11,10 @@ cancel-afk-on-jump: true
 
 # the player cannot take damage when they are afk
 invulnerable-during-afk: true
+
+# kick players after this many seconds of true inactivity (no movement, no input).
+# set to -1 to disable.
+afk-kick-seconds: 1200
+
+# kick message shown to kicked players. supports legacy '&' color codes.
+afk-kick-message: "&cYou have been kicked for being AFK too long."

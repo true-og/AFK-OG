@@ -12,18 +12,29 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import de.codecrafter.smartAfk.AFKOG;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 public class AfkManager {
 
 	private final Set<UUID> afkPlayers = new HashSet<>();
 	private final Map<UUID, Location> afkPositions = new HashMap<>();
 	private final Map<UUID, Long> lastActivities = new HashMap<>();
+	private final Map<UUID, Long> lastLookChanges = new HashMap<>();
+	private static final long INTERACT_LOOK_WINDOW_MS = 5000L;
 	private static final String AFK_PREFIX = "&c[AFK] ";
+	private static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacyAmpersand();
+
+	private static Component legacy(String text) {
+
+		return LEGACY.deserialize(text);
+
+	}
 
 	public void setAfk(Player player) {
 
@@ -32,10 +43,26 @@ public class AfkManager {
 
 		final String name = player.getName();
 
-		player.displayName(Component.text(AFK_PREFIX + "&r" + name));
-		player.playerListName(Component.text(AFK_PREFIX + "&r" + name));
+		player.displayName(legacy(AFK_PREFIX + "&r" + name));
+		player.playerListName(legacy(AFK_PREFIX + "&r" + name));
 
-		player.sendMessage(AFK_PREFIX + "&c You are now AFK.");
+		player.sendMessage(legacy(AFK_PREFIX + "&cYou are now AFK."));
+
+		clearMobTargets(player);
+
+	}
+
+	private void clearMobTargets(Player player) {
+
+		player.getWorld().getNearbyEntities(player.getLocation(), 64.0D, 64.0D, 64.0D).forEach(entity -> {
+
+			if (entity instanceof Mob mob && mob.getTarget() != null && mob.getTarget().getUniqueId().equals(player.getUniqueId())) {
+
+				mob.setTarget(null);
+
+			}
+
+		});
 
 	}
 
@@ -49,7 +76,7 @@ public class AfkManager {
 		player.displayName(name);
 		player.playerListName(name);
 
-		player.sendMessage(AFK_PREFIX + "&a You are no longer AFK.");
+		player.sendMessage(legacy(AFK_PREFIX + "&aYou are no longer AFK."));
 
 	}
 
@@ -68,6 +95,19 @@ public class AfkManager {
 	public void updateActivity(Player player) {
 
 		lastActivities.put(player.getUniqueId(), System.currentTimeMillis());
+
+	}
+
+	public void updateLook(Player player) {
+
+		lastLookChanges.put(player.getUniqueId(), System.currentTimeMillis());
+
+	}
+
+	public boolean hasRecentLookChange(Player player) {
+
+		final Long last = lastLookChanges.get(player.getUniqueId());
+		return last != null && System.currentTimeMillis() - last < INTERACT_LOOK_WINDOW_MS;
 
 	}
 
@@ -92,11 +132,23 @@ public class AfkManager {
 		new BukkitRunnable() {
 
 			final int timeoutSeconds = plugin.getAfkConfig().getAfkTimeoutSeconds();
+			final int kickSeconds = plugin.getAfkConfig().getAfkKickSeconds();
+			final String kickMessage = plugin.getAfkConfig().getAfkKickMessage();
 
 			@Override
 			public void run() {
 
 				plugin.getServer().getOnlinePlayers().forEach(player -> {
+
+					final long idleMillis = System.currentTimeMillis() - getLastActivity(player);
+
+					if (kickSeconds > 0 && idleMillis > kickSeconds * 1000L && !player.hasPermission("afkog.exempt")) {
+
+						player.kick(legacy(kickMessage));
+
+						return;
+
+					}
 
 					if (isAfk(player)) {
 
@@ -104,7 +156,7 @@ public class AfkManager {
 
 					}
 
-					if (System.currentTimeMillis() - getLastActivity(player) > timeoutSeconds * 1000L) {
+					if (timeoutSeconds > 0 && idleMillis > timeoutSeconds * 1000L) {
 
 						setAfk(player);
 
@@ -114,7 +166,7 @@ public class AfkManager {
 
 			}
 
-			// Every 5 seconds.   
+			// Every 5 seconds.
 		}.runTaskTimer(plugin, 20L, 100L);
 
 	}

@@ -14,8 +14,10 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.entity.Mob;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -31,7 +33,15 @@ public class AfkListener implements Listener {
 		final AfkConfig afkConfig = smartAfk.getAfkConfig();
 		afkManager.updateActivity(player);
 
-		if (event.getFrom().getBlockX() == event.getTo().getBlockX() && event.getFrom().getBlockZ() == event.getTo().getBlockZ() && event.getFrom().getBlockY() == event.getTo().getBlockY()) {
+		final Location from = event.getFrom();
+		final Location to = event.getTo();
+		if (from.getYaw() != to.getYaw() || from.getPitch() != to.getPitch()) {
+
+			afkManager.updateLook(player);
+
+		}
+
+		if (from.getBlockX() == to.getBlockX() && from.getBlockZ() == to.getBlockZ() && from.getBlockY() == to.getBlockY()) {
 
 			return;
 
@@ -51,9 +61,7 @@ public class AfkListener implements Listener {
 
 		}
 
-		final Location from = event.getFrom();
-		final Location origTo = event.getTo();
-		if (afkConfig.isCancelAfkOnJump() && origTo.getY() >= from.getBlockY() + 1) {
+		if (afkConfig.isCancelAfkOnJump() && to.getY() >= from.getBlockY() + 1) {
 
 			afkManager.unsetAfk(player);
 
@@ -68,24 +76,29 @@ public class AfkListener implements Listener {
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
 
-		final Player player = event.getPlayer();
-		final AfkManager afkManager = AFKOG.getPlugin().getAfkManager();
-
-		afkManager.updateActivity(player);
-
-		if (afkManager.isAfk(player)) {
-
-			afkManager.unsetAfk(player);
-
-		}
+		handleInteractActivity(event.getPlayer());
 
 	}
 
 	@EventHandler
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 
-		final Player player = event.getPlayer();
+		handleInteractActivity(event.getPlayer());
+
+	}
+
+	private void handleInteractActivity(Player player) {
+
 		final AfkManager afkManager = AFKOG.getPlugin().getAfkManager();
+
+		// only count interactions as activity if the player has moved their look
+		// recently. auto-clickers spam clicks without moving the mouse, so we
+		// ignore their input and let them go AFK normally.
+		if (!afkManager.hasRecentLookChange(player)) {
+
+			return;
+
+		}
 
 		afkManager.updateActivity(player);
 
@@ -157,6 +170,32 @@ public class AfkListener implements Listener {
 		}
 
 		event.setCancelled(true);
+
+	}
+
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void onEntityTarget(EntityTargetLivingEntityEvent event) {
+
+		if (!(event.getTarget() instanceof Player player)) {
+
+			return;
+
+		}
+
+		if (!AFKOG.getPlugin().getAfkManager().isAfk(player)) {
+
+			return;
+
+		}
+
+		event.setCancelled(true);
+		event.setTarget(null);
+
+		if (event.getEntity() instanceof Mob mob) {
+
+			mob.setTarget(null);
+
+		}
 
 	}
 

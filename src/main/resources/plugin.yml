@@ -9,3 +9,7 @@ commands:
   afk:
     description: Toggles the afk state.
     usage: /afk
+permissions:
+  afkog.exempt:
+    description: Exempts the player from being auto-kicked for AFK inactivity.
+    default: false

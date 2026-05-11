@@ -18,6 +18,8 @@ public class AfkConfig {
 	private boolean cancelAfkOnJump;
 	private boolean invulnerableDuringAfk;
 	private int afkTimeoutSeconds;
+	private int afkKickSeconds;
+	private String afkKickMessage;
 
 	/**
 	 * Creates an instance of {@code TimerConfig} class.
@@ -54,6 +56,8 @@ public class AfkConfig {
 		this.freezeAfkPlayers = config.getBoolean("freeze-afk-players", true);
 		this.cancelAfkOnJump = config.getBoolean("cancel-afk-on-jump", true);
 		this.invulnerableDuringAfk = config.getBoolean("invulnerable-during-afk", true);
+		this.afkKickSeconds = config.getInt("afk-kick-seconds", 1200);
+		this.afkKickMessage = config.getString("afk-kick-message", "&cYou have been kicked for being AFK too long.");
 
 	}
 
@@ -78,6 +82,18 @@ public class AfkConfig {
 	public boolean isInvulnerableDuringAfk() {
 
 		return invulnerableDuringAfk;
+
+	}
+
+	public int getAfkKickSeconds() {
+
+		return afkKickSeconds;
+
+	}
+
+	public String getAfkKickMessage() {
+
+		return afkKickMessage;
 
 	}
 

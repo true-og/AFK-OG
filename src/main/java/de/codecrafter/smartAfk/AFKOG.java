@@ -44,8 +44,8 @@ public final class AFKOG extends JavaPlugin {
 
 		getServer().getOnlinePlayers().forEach(afkManager::clearLegacyInvulnerability);
 
-		// start the afk check task if in config enabled.
-		if (afkConfig.getAfkTimeoutSeconds() > 0) {
+		// start the afk check task if either auto-afk or auto-kick is enabled.
+		if (afkConfig.getAfkTimeoutSeconds() > 0 || afkConfig.getAfkKickSeconds() > 0) {
 
 			afkManager.startAfkCheckTask(this);
 
