@@ -18,6 +18,7 @@ public final class AFKOG extends JavaPlugin {
 	private static AFKOG plugin;
 	private AfkConfig afkConfig;
 	private AfkManager afkManager;
+	private static String prefix = "&7[&cAFK&f-&4OG&7] ";
 
 	@Override
 	public void onEnable() {
@@ -77,5 +78,11 @@ public final class AFKOG extends JavaPlugin {
 		return afkConfig;
 
 	}
+
+	public static String getPrefix() {
+
+                return prefix;
+
+        }
 
 }

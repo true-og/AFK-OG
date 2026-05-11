@@ -27,7 +27,6 @@ public class AfkManager {
 	private final Map<UUID, Long> lastActivities = new HashMap<>();
 	private final Map<UUID, Long> lastLookChanges = new HashMap<>();
 	private static final long INTERACT_LOOK_WINDOW_MS = 5000L;
-	private static final String AFK_PREFIX = "&c[AFK] ";
 	private static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacyAmpersand();
 
 	private static Component legacy(String text) {
@@ -43,10 +42,10 @@ public class AfkManager {
 
 		final String name = player.getName();
 
-		player.displayName(legacy(AFK_PREFIX + "&r" + name));
-		player.playerListName(legacy(AFK_PREFIX + "&r" + name));
+		player.displayName(legacy(AFKOG.getPrefix() + "&r" + name));
+		player.playerListName(legacy(AFKOG.getPrefix() + "&r" + name));
 
-		player.sendMessage(legacy(AFK_PREFIX + "&cYou are now AFK."));
+		player.sendMessage(legacy(AFKOG.getPrefix() + "&cYou are now AFK."));
 
 		clearMobTargets(player);
 
@@ -76,7 +75,7 @@ public class AfkManager {
 		player.displayName(name);
 		player.playerListName(name);
 
-		player.sendMessage(legacy(AFK_PREFIX + "&aYou are no longer AFK."));
+		player.sendMessage(legacy(AFKOG.getPrefix() + "&aYou are no longer AFK."));
 
 	}
 
