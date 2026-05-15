@@ -103,6 +103,26 @@ public class AfkManager {
 
 	}
 
+	public void initializeSession(Player player) {
+
+		final UUID playerId = player.getUniqueId();
+		afkPlayers.remove(playerId);
+		afkPositions.remove(playerId);
+		lastLookChanges.remove(playerId);
+		lastActivities.put(playerId, System.currentTimeMillis());
+
+	}
+
+	public void clearSession(Player player) {
+
+		final UUID playerId = player.getUniqueId();
+		afkPlayers.remove(playerId);
+		afkPositions.remove(playerId);
+		lastLookChanges.remove(playerId);
+		lastActivities.remove(playerId);
+
+	}
+
 	public boolean hasRecentLookChange(Player player) {
 
 		final Long last = lastLookChanges.get(player.getUniqueId());
