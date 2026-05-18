@@ -57,7 +57,7 @@ public class AfkConfig {
 		this.cancelAfkOnJump = config.getBoolean("cancel-afk-on-jump", true);
 		this.invulnerableDuringAfk = config.getBoolean("invulnerable-during-afk", true);
 		this.afkKickSeconds = config.getInt("afk-kick-seconds", 1200);
-		this.afkKickMessage = config.getString("afk-kick-message", "&cYou have been kicked for being AFK too long.");
+		this.afkKickMessage = config.getString("afk-kick-message", "&cYou have been kicked for being AFK too long.\n&7Buy a rank at &bhttps://shop.trueog.net &7to bypass the AFK timer.");
 
 	}
 

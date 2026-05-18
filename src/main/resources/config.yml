@@ -17,4 +17,4 @@ invulnerable-during-afk: true
 afk-kick-seconds: 1200
 
 # kick message shown to kicked players. supports legacy '&' color codes.
-afk-kick-message: "&cYou have been kicked for being AFK too long."
+afk-kick-message: "&cYou have been kicked for being AFK too long.\n&7Buy a rank at &bhttps://shop.trueog.net &7to bypass the AFK timer."
