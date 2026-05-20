@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Mob;
@@ -18,6 +19,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import de.codecrafter.smartAfk.AFKOG;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 public class AfkManager {
@@ -28,10 +33,27 @@ public class AfkManager {
 	private final Map<UUID, Long> lastLookChanges = new HashMap<>();
 	private static final long INTERACT_LOOK_WINDOW_MS = 5000L;
 	private static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacyAmpersand();
+	private static final Pattern URL_PATTERN = Pattern.compile("https?://\\S+");
+	private static final TextReplacementConfig URL_REPLACEMENT = TextReplacementConfig.builder()
+			.match(URL_PATTERN)
+			.replacement((match, builder) -> {
+				final String url = match.group();
+				return Component.text(url)
+						.decorate(TextDecoration.UNDERLINED)
+						.clickEvent(ClickEvent.openUrl(url))
+						.hoverEvent(HoverEvent.showText(Component.text("Click to open " + url)));
+			})
+			.build();
 
 	private static Component legacy(String text) {
 
 		return LEGACY.deserialize(text);
+
+	}
+
+	private static Component legacyClickable(String text) {
+
+		return LEGACY.deserialize(text).replaceText(URL_REPLACEMENT);
 
 	}
 
@@ -163,7 +185,7 @@ public class AfkManager {
 
 					if (kickSeconds > 0 && idleMillis > kickSeconds * 1000L && !player.hasPermission("afkog.exempt")) {
 
-						player.kick(legacy(kickMessage));
+						player.kick(legacyClickable(kickMessage));
 
 						return;
 
