@@ -18,3 +18,35 @@ afk-kick-seconds: 1200
 
 # kick message shown to kicked players. supports legacy '&' color codes.
 afk-kick-message: "&cYou have been kicked for being AFK too long.\n&7Buy a rank at &bhttps://shop.trueog.net &7to bypass the AFK timer."
+
+# --- auto-click detection ---
+# interactions (clicks, attacks, menu use, block place/break) only count as
+# anti-AFK activity when their timing looks human. a steady, machine-regular
+# cadence is treated as automation and does NOT reset the AFK timer, so
+# auto-clickers and combat grinders still go AFK. real block-to-block movement
+# (walking, water-pushed AFK pools) is unaffected. auto-fishing is intentionally
+# NOT handled here; pair with a dedicated anti-auto-fishing plugin.
+
+# minimum number of recent interactions before cadence is judged. below this,
+# input is always treated as human, so occasional clickers are never flagged.
+autoclick-min-clicks: 10
+
+# only interactions within this many seconds count toward the cadence judgement.
+autoclick-window-seconds: 4
+
+# timing-regularity cutoff (coefficient of variation). lower is stricter (only
+# very steady cadence is flagged); higher catches more automation but may flag
+# fast, rhythmic human clicking. 0.18 catches typical auto-clickers including
+# light jitter while leaving normal play alone.
+autoclick-cv-threshold: 0.18
+
+# how many times in a row a player may interact with the SAME target (one
+# button/lever/sign, one block, one menu slot, or empty air) before those
+# interactions stop counting as activity. catches auto-clicking a single target
+# at any speed or jitter. a real player varies targets, which resets the count.
+# lower is stricter. counts within one afk-timeout-seconds window.
+autoclick-max-same-target: 6
+
+# if NoCheatPlus is installed, an attack-frequency violation within this many
+# seconds suppresses combat activity credit (backstop for fast attack-clickers).
+nocheatplus-flag-window-seconds: 2

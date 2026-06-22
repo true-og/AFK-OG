@@ -20,6 +20,11 @@ public class AfkConfig {
 	private int afkTimeoutSeconds;
 	private int afkKickSeconds;
 	private String afkKickMessage;
+	private int autoclickMinClicks;
+	private int autoclickWindowSeconds;
+	private double autoclickCvThreshold;
+	private int autoclickMaxSameTarget;
+	private int ncpFlagWindowSeconds;
 
 	/**
 	 * Creates an instance of {@code TimerConfig} class.
@@ -58,6 +63,22 @@ public class AfkConfig {
 		this.invulnerableDuringAfk = config.getBoolean("invulnerable-during-afk", true);
 		this.afkKickSeconds = config.getInt("afk-kick-seconds", 1200);
 		this.afkKickMessage = config.getString("afk-kick-message", "&cYou have been kicked for being AFK too long.\n&7Buy a rank at &bhttps://shop.trueog.net &7to bypass the AFK timer.");
+		// clamp to sane ranges so a misconfigured value cannot silently disable
+		// detection or produce degenerate math.
+		this.autoclickMinClicks = Math.max(2, config.getInt("autoclick-min-clicks", 10));
+		this.autoclickWindowSeconds = Math.max(1, config.getInt("autoclick-window-seconds", 4));
+
+		double cvThreshold = config.getDouble("autoclick-cv-threshold", 0.18D);
+		if (Double.isNaN(cvThreshold) || cvThreshold <= 0.0D) {
+
+			plugin.getLogger().warning("Invalid autoclick-cv-threshold (" + cvThreshold + "); falling back to 0.18.");
+			cvThreshold = 0.18D;
+
+		}
+		this.autoclickCvThreshold = cvThreshold;
+
+		this.autoclickMaxSameTarget = Math.max(2, config.getInt("autoclick-max-same-target", 6));
+		this.ncpFlagWindowSeconds = Math.max(0, config.getInt("nocheatplus-flag-window-seconds", 2));
 
 	}
 
@@ -94,6 +115,36 @@ public class AfkConfig {
 	public String getAfkKickMessage() {
 
 		return afkKickMessage;
+
+	}
+
+	public int getAutoclickMinClicks() {
+
+		return autoclickMinClicks;
+
+	}
+
+	public int getAutoclickWindowSeconds() {
+
+		return autoclickWindowSeconds;
+
+	}
+
+	public double getAutoclickCvThreshold() {
+
+		return autoclickCvThreshold;
+
+	}
+
+	public int getAutoclickMaxSameTarget() {
+
+		return autoclickMaxSameTarget;
+
+	}
+
+	public int getNcpFlagWindowSeconds() {
+
+		return ncpFlagWindowSeconds;
 
 	}
 
