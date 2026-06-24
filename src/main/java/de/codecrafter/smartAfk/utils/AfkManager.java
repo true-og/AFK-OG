@@ -71,11 +71,6 @@ public class AfkManager {
 		afkPlayers.add(player.getUniqueId());
 		afkPositions.put(player.getUniqueId(), player.getLocation());
 
-		final String name = player.getName();
-
-		player.displayName(legacy(AFKOG.getPrefix() + "&r" + name));
-		player.playerListName(legacy(AFKOG.getPrefix() + "&r" + name));
-
 		player.sendMessage(legacy(AFKOG.getPrefix() + "&cYou are now AFK."));
 
 		clearMobTargets(player);
@@ -100,11 +95,6 @@ public class AfkManager {
 
 		afkPlayers.remove(player.getUniqueId());
 		afkPositions.remove(player.getUniqueId());
-
-		final Component name = Component.text(player.getName());
-
-		player.displayName(name);
-		player.playerListName(name);
 
 		player.sendMessage(legacy(AFKOG.getPrefix() + "&aYou are no longer AFK."));
 
