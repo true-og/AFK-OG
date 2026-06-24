@@ -159,14 +159,16 @@ public class AfkListener implements Listener {
 
 	}
 
-	// credit an interaction as activity unless it looks automated: either the
-	// same target is hit repeatedly (auto-click on one button/lever/sign/slot/air)
-	// or, when cadence applies, the recent click timing is machine-regular.
+	// credit activity unless automated: one target hit repeatedly, few distinct
+	// targets over the idle window, or (when cadence applies) machine-regular timing.
 	private void creditInteraction(Player player, String targetKey, boolean useCadence) {
 
 		final AfkManager afkManager = AFKOG.getPlugin().getAfkManager();
 
-		boolean automated = afkManager.isRepeatedTarget(player, targetKey);
+		afkManager.recordTarget(player, targetKey);
+
+		boolean automated = afkManager.isRepeatedTarget(player, targetKey)
+				|| afkManager.isLowDiversityAutomation(player);
 
 		if (useCadence) {
 

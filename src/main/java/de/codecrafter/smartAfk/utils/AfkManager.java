@@ -37,10 +37,15 @@ public class AfkManager {
 	private final Map<UUID, Long> lastActivities = new HashMap<>();
 	// main-thread only (Bukkit events + the AFK check task).
 	private final Map<UUID, Deque<Long>> interactionTimes = new HashMap<>();
+	// recent (timestamp, target) pairs for the windowed diversity check.
+	private final Map<UUID, Deque<Interaction>> interactionHistory = new HashMap<>();
 	private final Map<UUID, TargetState> targetStates = new HashMap<>();
 	// written from NoCheatPlus' NET check, which may run off the main thread.
 	private final Map<UUID, Long> lastAttackFlags = new ConcurrentHashMap<>();
 	private static final int MAX_SAMPLES = 64;
+	// diversity check: withhold credit at >= MIN_CLICKS interactions spanning <= MAX_DISTINCT_TARGETS targets in one idle window.
+	private static final int AUTOCLICK_MAX_DISTINCT_TARGETS = 2;
+	private static final int AUTOCLICK_DIVERSITY_MIN_CLICKS = 10;
 	private static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacyAmpersand();
 	private static final Pattern URL_PATTERN = Pattern.compile("https?://\\S+");
 	private static final TextReplacementConfig URL_REPLACEMENT = TextReplacementConfig.builder()
@@ -221,6 +226,77 @@ public class AfkManager {
 
 	}
 
+	private static final class Interaction {
+
+		private final long time;
+		private final String key;
+
+		private Interaction(long time, String key) {
+
+			this.time = time;
+			this.key = key;
+
+		}
+
+	}
+
+	// record an interaction target for the windowed diversity check, dropping
+	// entries older than one idle window and bounding history to MAX_SAMPLES.
+	public void recordTarget(Player player, String targetKey) {
+
+		final Deque<Interaction> history = interactionHistory.computeIfAbsent(player.getUniqueId(), k -> new ArrayDeque<>());
+		final long now = System.currentTimeMillis();
+		history.addLast(new Interaction(now, targetKey));
+
+		final int timeoutSeconds = AFKOG.getPlugin().getAfkConfig().getAfkTimeoutSeconds();
+		final long windowMs = (timeoutSeconds > 0 ? timeoutSeconds : 300) * 1000L;
+		final long cutoff = now - windowMs;
+		while (!history.isEmpty() && (history.peekFirst().time < cutoff || history.size() > MAX_SAMPLES)) {
+
+			history.removeFirst();
+
+		}
+
+	}
+
+	// true when recent interaction is low-variety automation: at least
+	// AUTOCLICK_DIVERSITY_MIN_CLICKS interactions in one idle window across no more
+	// than AUTOCLICK_MAX_DISTINCT_TARGETS distinct targets. catches auto-clickers
+	// that rotate among a few buttons/levers/slots at any rate or jitter, which the
+	// same-target streak and short-window cadence both miss; a roaming player
+	// touches many distinct targets and is unaffected.
+	public boolean isLowDiversityAutomation(Player player) {
+
+		final Deque<Interaction> history = interactionHistory.get(player.getUniqueId());
+		if (history == null || history.size() < AUTOCLICK_DIVERSITY_MIN_CLICKS) {
+
+			return false;
+
+		}
+
+		final int timeoutSeconds = AFKOG.getPlugin().getAfkConfig().getAfkTimeoutSeconds();
+		final long windowMs = (timeoutSeconds > 0 ? timeoutSeconds : 300) * 1000L;
+		final long cutoff = System.currentTimeMillis() - windowMs;
+
+		final Set<String> distinct = new HashSet<>();
+		int count = 0;
+		for (final Interaction interaction : history) {
+
+			if (interaction.time < cutoff) {
+
+				continue;
+
+			}
+
+			count++;
+			distinct.add(interaction.key);
+
+		}
+
+		return count >= AUTOCLICK_DIVERSITY_MIN_CLICKS && distinct.size() <= AUTOCLICK_MAX_DISTINCT_TARGETS;
+
+	}
+
 	/**
 	 * Records an interaction against a target identity (a block position, an
 	 * entity, an inventory slot, or "air") and returns true once the player has
@@ -305,6 +381,7 @@ public class AfkManager {
 		afkPlayers.remove(playerId);
 		afkPositions.remove(playerId);
 		interactionTimes.remove(playerId);
+		interactionHistory.remove(playerId);
 		targetStates.remove(playerId);
 		lastAttackFlags.remove(playerId);
 		lastActivities.put(playerId, System.currentTimeMillis());
@@ -317,6 +394,7 @@ public class AfkManager {
 		afkPlayers.remove(playerId);
 		afkPositions.remove(playerId);
 		interactionTimes.remove(playerId);
+		interactionHistory.remove(playerId);
 		targetStates.remove(playerId);
 		lastAttackFlags.remove(playerId);
 		lastActivities.remove(playerId);
