@@ -78,6 +78,14 @@ public class AfkManager {
 
 		player.sendMessage(legacy(AFKOG.getPrefix() + "&cYou are now AFK."));
 
+		final AfkConfig config = AFKOG.getPlugin().getAfkConfig();
+		if (config.isBroadcastWorld(player.getWorld().getName())) {
+
+			final String message = config.getAfkBroadcastMessage().replace("%player%", player.getName());
+			AFKOG.getPlugin().getServer().broadcast(legacy(AFKOG.getPrefix() + message));
+
+		}
+
 		clearMobTargets(player);
 
 	}
@@ -102,6 +110,14 @@ public class AfkManager {
 		afkPositions.remove(player.getUniqueId());
 
 		player.sendMessage(legacy(AFKOG.getPrefix() + "&aYou are no longer AFK."));
+
+		final AfkConfig config = AFKOG.getPlugin().getAfkConfig();
+		if (config.isBroadcastWorld(player.getWorld().getName())) {
+
+			final String message = config.getAfkBroadcastReturnMessage().replace("%player%", player.getName());
+			AFKOG.getPlugin().getServer().broadcast(legacy(AFKOG.getPrefix() + message));
+
+		}
 
 	}
 

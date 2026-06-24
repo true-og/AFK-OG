@@ -5,6 +5,11 @@
 
 package de.codecrafter.smartAfk.utils;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+
 import org.bukkit.configuration.file.FileConfiguration;
 
 import de.codecrafter.smartAfk.AFKOG;
@@ -25,6 +30,10 @@ public class AfkConfig {
 	private double autoclickCvThreshold;
 	private int autoclickMaxSameTarget;
 	private int ncpFlagWindowSeconds;
+	// lowercased world names where going AFK is broadcast to everyone.
+	private Set<String> afkBroadcastWorlds;
+	private String afkBroadcastMessage;
+	private String afkBroadcastReturnMessage;
 
 	/**
 	 * Creates an instance of {@code TimerConfig} class.
@@ -79,6 +88,21 @@ public class AfkConfig {
 
 		this.autoclickMaxSameTarget = Math.max(2, config.getInt("autoclick-max-same-target", 6));
 		this.ncpFlagWindowSeconds = Math.max(0, config.getInt("nocheatplus-flag-window-seconds", 2));
+
+		final Set<String> worlds = new HashSet<>();
+		final List<String> configured = config.getStringList("afk-broadcast-worlds");
+		for (final String world : configured) {
+
+			if (world != null && !world.isBlank()) {
+
+				worlds.add(world.toLowerCase(Locale.ROOT));
+
+			}
+
+		}
+		this.afkBroadcastWorlds = worlds;
+		this.afkBroadcastMessage = config.getString("afk-broadcast-message", "&e%player% &7is now AFK.");
+		this.afkBroadcastReturnMessage = config.getString("afk-broadcast-return-message", "&e%player% &7is no longer AFK.");
 
 	}
 
@@ -145,6 +169,30 @@ public class AfkConfig {
 	public int getNcpFlagWindowSeconds() {
 
 		return ncpFlagWindowSeconds;
+
+	}
+
+	/**
+	 * Returns true when going AFK in the given world should be broadcast to
+	 * everyone. World names are matched case-insensitively.
+	 *
+	 * @param worldName The name of the world the player is in.
+	 */
+	public boolean isBroadcastWorld(String worldName) {
+
+		return worldName != null && afkBroadcastWorlds.contains(worldName.toLowerCase(Locale.ROOT));
+
+	}
+
+	public String getAfkBroadcastMessage() {
+
+		return afkBroadcastMessage;
+
+	}
+
+	public String getAfkBroadcastReturnMessage() {
+
+		return afkBroadcastReturnMessage;
 
 	}
 

@@ -12,6 +12,21 @@ cancel-afk-on-jump: true
 # the player cannot take damage when they are afk
 invulnerable-during-afk: true
 
+# broadcast a chat message to everyone when a player goes AFK while in one of
+# these worlds. leave the list empty to disable the broadcast entirely.
+afk-broadcast-worlds:
+  - world
+  - world_nether
+  - world_the_end
+
+# message broadcast when a player goes AFK in a whitelisted world.
+# supports legacy '&' color codes. %player% is replaced with the player name.
+afk-broadcast-message: "&e%player% &7is now AFK."
+
+# message broadcast when a player stops being AFK in a whitelisted world.
+# supports legacy '&' color codes. %player% is replaced with the player name.
+afk-broadcast-return-message: "&e%player% &7is no longer AFK."
+
 # kick players after this many seconds of true inactivity (no movement, no input).
 # set to -1 to disable.
 afk-kick-seconds: 1200
