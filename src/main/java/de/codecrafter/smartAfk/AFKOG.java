@@ -8,6 +8,7 @@ package de.codecrafter.smartAfk;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.codecrafter.smartAfk.commands.AfkCommand;
+import de.codecrafter.smartAfk.integrations.LuckPermsHook;
 import de.codecrafter.smartAfk.integrations.NoCheatPlusHook;
 import de.codecrafter.smartAfk.listeners.AfkListener;
 import de.codecrafter.smartAfk.listeners.PlayerJoinListener;
@@ -41,6 +42,9 @@ public final class AFKOG extends JavaPlugin {
 		// optional NoCheatPlus backstop for combat auto-click detection.
 		NoCheatPlusHook.register(this, afkManager);
 
+		// optional LuckPerms hook for AFK broadcast prefixes.
+		LuckPermsHook.initialize(this);
+
 		if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 
 			new AfkPlaceholderExpansion(this).register();
@@ -64,6 +68,8 @@ public final class AFKOG extends JavaPlugin {
 		NoCheatPlusHook.unregister(this);
 
 		getServer().getOnlinePlayers().stream().filter(afkManager::isAfk).forEach(afkManager::unsetAfk);
+
+		LuckPermsHook.shutdown();
 
 	}
 

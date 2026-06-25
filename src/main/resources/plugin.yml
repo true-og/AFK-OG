@@ -4,7 +4,7 @@ main: de.codecrafter.smartAfk.AFKOG
 api-version: ${apiVersion}
 authors: [ Felix_Heidisch, NotAlexNoyle ]
 website: https://github.com/true-og/AFK-OG
-softdepend: [PlaceholderAPI, NoCheatPlus]
+softdepend: [PlaceholderAPI, NoCheatPlus, LuckPerms]
 commands:
   afk:
     description: Toggles the afk state.

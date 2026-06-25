@@ -23,6 +23,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import de.codecrafter.smartAfk.AFKOG;
+import de.codecrafter.smartAfk.integrations.LuckPermsHook;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -79,12 +80,7 @@ public class AfkManager {
 		player.sendMessage(legacy(AFKOG.getPrefix() + "&cYou are now AFK."));
 
 		final AfkConfig config = AFKOG.getPlugin().getAfkConfig();
-		if (config.isBroadcastWorld(player.getWorld().getName())) {
-
-			final String message = config.getAfkBroadcastMessage().replace("%player%", player.getName());
-			AFKOG.getPlugin().getServer().broadcast(legacy(AFKOG.getPrefix() + message));
-
-		}
+		broadcastAfk(player, config.getAfkBroadcastMessage());
 
 		clearMobTargets(player);
 
@@ -112,12 +108,29 @@ public class AfkManager {
 		player.sendMessage(legacy(AFKOG.getPrefix() + "&aYou are no longer AFK."));
 
 		final AfkConfig config = AFKOG.getPlugin().getAfkConfig();
-		if (config.isBroadcastWorld(player.getWorld().getName())) {
+		broadcastAfk(player, config.getAfkBroadcastReturnMessage());
 
-			final String message = config.getAfkBroadcastReturnMessage().replace("%player%", player.getName());
-			AFKOG.getPlugin().getServer().broadcast(legacy(AFKOG.getPrefix() + message));
+	}
+
+	/**
+	 * Broadcasts {@code template} to the whole server when the player is in a
+	 * configured broadcast world. {@code %prefix%} is replaced with the player's
+	 * LuckPerms prefix (empty when LuckPerms is absent) and {@code %player%} with
+	 * the player name.
+	 */
+	private void broadcastAfk(Player player, String template) {
+
+		final AfkConfig config = AFKOG.getPlugin().getAfkConfig();
+		if (!config.isBroadcastWorld(player.getWorld().getName())) {
+
+			return;
 
 		}
+
+		final String message = template
+				.replace("%prefix%", LuckPermsHook.getPrefix(player))
+				.replace("%player%", player.getName());
+		AFKOG.getPlugin().getServer().broadcast(legacy(AFKOG.getPrefix() + message));
 
 	}
 

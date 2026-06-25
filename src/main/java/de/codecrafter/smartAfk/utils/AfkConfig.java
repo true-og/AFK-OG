@@ -101,8 +101,8 @@ public class AfkConfig {
 
 		}
 		this.afkBroadcastWorlds = worlds;
-		this.afkBroadcastMessage = config.getString("afk-broadcast-message", "&e%player% &7is now AFK.");
-		this.afkBroadcastReturnMessage = config.getString("afk-broadcast-return-message", "&e%player% &7is no longer AFK.");
+		this.afkBroadcastMessage = config.getString("afk-broadcast-message", "%prefix%&e%player% &7is now AFK.");
+		this.afkBroadcastReturnMessage = config.getString("afk-broadcast-return-message", "%prefix%&e%player% &7is no longer AFK.");
 
 	}
 

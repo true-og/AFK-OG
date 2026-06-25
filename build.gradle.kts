@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "de.codecrafter"
-version = providers.gradleProperty("version").getOrElse("1.0.0-beta")
+version = providers.gradleProperty("version").getOrElse("1.0.0")
 
 val pluginName = "AFK-OG"
 val apiVersion = "1.19"
@@ -39,6 +39,7 @@ repositories {
 dependencies {
     compileOnly("org.purpurmc.purpur:purpur-api:1.19.4-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.12.2")
+    compileOnly("net.luckperms:api:5.5")
     implementation("com.google.code.gson:gson:2.13.2")
 }
 
