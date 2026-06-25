@@ -22,12 +22,16 @@ afk-broadcast-worlds:
 # message broadcast when a player goes AFK in a whitelisted world.
 # supports legacy '&' color codes. %player% is replaced with the player name and
 # %prefix% with the player's LuckPerms prefix (empty if LuckPerms is not installed).
-afk-broadcast-message: "%prefix%&e%player% &7is now AFK."
+# the prefix's trailing color/formatting bleeds into the name (no color is forced
+# before %player%); add a '&' code before %player% if you want to override it.
+afk-broadcast-message: "%prefix%%player% &7is now AFK."
 
 # message broadcast when a player stops being AFK in a whitelisted world.
 # supports legacy '&' color codes. %player% is replaced with the player name and
 # %prefix% with the player's LuckPerms prefix (empty if LuckPerms is not installed).
-afk-broadcast-return-message: "%prefix%&e%player% &7is no longer AFK."
+# the prefix's trailing color/formatting bleeds into the name (no color is forced
+# before %player%); add a '&' code before %player% if you want to override it.
+afk-broadcast-return-message: "%prefix%%player% &7is no longer AFK."
 
 # kick players after this many seconds of true inactivity (no movement, no input).
 # set to -1 to disable.
