@@ -130,7 +130,20 @@ public class AfkManager {
 		final String message = template
 				.replace("%prefix%", LuckPermsHook.getPrefix(player))
 				.replace("%player%", player.getName());
-		AFKOG.getPlugin().getServer().broadcast(legacy(AFKOG.getPrefix() + message));
+		final Component component = legacy(AFKOG.getPrefix() + message);
+
+		// the AFK player already sees their own "You are now/no longer AFK"
+		// message, so exclude them from the broadcast to avoid a duplicate.
+		final UUID self = player.getUniqueId();
+		AFKOG.getPlugin().getServer().getOnlinePlayers().forEach(recipient -> {
+
+			if (!recipient.getUniqueId().equals(self)) {
+
+				recipient.sendMessage(component);
+
+			}
+
+		});
 
 	}
 
