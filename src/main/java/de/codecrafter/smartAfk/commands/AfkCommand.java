@@ -30,6 +30,7 @@ public class AfkCommand implements CommandExecutor {
 		final AfkManager afkManager = AFKOG.getPlugin().getAfkManager();
 		if (afkManager.isAfk(player)) {
 
+			afkManager.updateActivity(player);
 			afkManager.unsetAfk(player);
 
 		}
