@@ -3,7 +3,7 @@ version: ${version}
 main: de.codecrafter.smartAfk.AFKOG
 api-version: ${apiVersion}
 authors: [ Felix_Heidisch, NotAlexNoyle ]
-website: https://github.com/true-og/AFK-OG
+website: https://git.trueog.net/trueog/AFK-OG
 softdepend: [PlaceholderAPI, NoCheatPlus, LuckPerms]
 commands:
   afk:
